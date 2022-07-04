@@ -1,1 +1,2 @@
-export * from './test';
+export * from './answer';
+export * from './template';
