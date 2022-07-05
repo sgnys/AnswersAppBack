@@ -31,20 +31,28 @@ templatesRouter
 
     .put('/:id', async (req, res) => {
         const template = await TemplateRecord.getOne(req.params.id);
-        console.log(template);
-        console.log(req.body)
 
         if (template === null) {
             throw new ValidationError('Nie znaleziono szablonu o podanym ID');
         }
+
 
         //TODO zrobić walidację jeżeli         template.firstParagraph === req.body.firstParagraph;
         // i                                   template.lastParagraph === req.body.lastParagraph;
         // to ValidationError "Nie dokonałeś żadnych zmian w szablonie, modyfikacja nie została wysłana na serwer"
         template.firstParagraph = req.body.firstParagraph;
         template.lastParagraph = req.body.lastParagraph
-        await template.update();
 
+        if(template.firstParagraph.length < 3 || template.firstParagraph.trim().length > 200){
+            throw new ValidationError('Długość akapitu powitalnego  musi zawierać się w przedziale od 3 do 200 znaków.');
+        }
+
+        if(template.lastParagraph.trim().length < 3 || template.lastParagraph.trim().length > 300){
+            throw new ValidationError('Długość akapitu końcowego  musi zawierać się w przedziale od 3 do 300 znaków.');
+        }
+
+        await template.update();
+        console.log(template);
         res.json({
             template,
         } as GetSingleTemplateRes)

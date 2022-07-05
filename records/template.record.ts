@@ -16,12 +16,12 @@ export class TemplateRecord implements TemplateEntity{
 
         const {id, firstParagraph, lastParagraph, name} = obj;
 
-         if(firstParagraph.trim().length < 3 || firstParagraph.trim().length > 200){
-             new ValidationError('Długość akapitu powitalnego  musi zawierać się w przedziale od 3 do 200 znaków.');
+         if(firstParagraph.length < 3 || firstParagraph.trim().length > 200){
+             throw new ValidationError('Długość akapitu powitalnego  musi zawierać się w przedziale od 3 do 200 znaków.');
          }
 
         if(lastParagraph.trim().length < 3 || lastParagraph.trim().length > 300){
-            new ValidationError('Długość akapitu końcowego  musi zawierać się w przedziale od 3 do 300 znaków.');
+            throw new ValidationError('Długość akapitu końcowego  musi zawierać się w przedziale od 3 do 300 znaków.');
         }
         //TODO powyższe walidacje przenieść również na front
 
