@@ -22,6 +22,8 @@ export enum AnswerGroupEnum{
     TELCO = 'telco',
     PREPAID = 'prepaid',
     OTHER = 'other',
+    ALL = 'all',
+    MOST_COPIED = 'most-copied',
 }
 
 

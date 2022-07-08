@@ -1,38 +1,47 @@
 import {Router} from "express";
 import {AnswerRecord} from "../records/answer.record";
 import {TemplateRecord} from "../records/template.record";
-import {GetSingleAnswerRes, ListAnswersRes} from "../types";
+import {AnswerGroupEnum, GetSingleAnswerRes, ListAnswersRes} from "../types";
 import {ValidationError} from "../utils/errors";
 
 export const answersRouter = Router();
 
 answersRouter
     .get('/', async (req, res) => {
-        // console.log(req.query);
-        // console.log("z body", req.query.sort)
-        // const sortedName = req.query.sort as string
-
-
-        // const sortValue = sort(req.query.sort as string);
-        //TODO sortowanie
 
         const answersList = await AnswerRecord.getAll();
         const templatesList = await TemplateRecord.getAll();
-        // console.log(answers);
-        // console.log(templates);
-        // console.log(sortedName)
-        // console.log({sortValue})
-        // res.render('answer/list-all', {
-        //     answers,
-        //     templates,
-        //     // sortValue,
-        // });
+
         res.json({
             answersList,
             templatesList,
         } as ListAnswersRes);
     })
 
+    .get('/sort/:category', async (req, res) => {
+        // console.log(req.params.category)
+        const {category}= req.params
+        console.log(category)
+        if(!(category === AnswerGroupEnum.IT || category === AnswerGroupEnum.TELCO || category === AnswerGroupEnum.PREPAID || category === AnswerGroupEnum.OTHER || category === AnswerGroupEnum.MOST_COPIED )){
+            throw new ValidationError('Nie została zaznaczona kategoria odpowiedzi.');
+        }
+
+        const answersList = await AnswerRecord.getAllSortedByCategory(req.params.category);
+        const templatesList = await TemplateRecord.getAll();
+
+        res.json({
+            answersList,
+            templatesList,
+        } as ListAnswersRes)
+    })
+
+    .get('/:id', async (req, res) => {
+        const answer = await AnswerRecord.getOne(req.params.id)
+
+        res.json({
+            answer,
+        } as GetSingleAnswerRes);
+    })
 
     .post('/', async (req, res) => {
 
@@ -76,14 +85,6 @@ answersRouter
         }
 
         await answer.update();
-
-        res.json({
-            answer,
-        } as GetSingleAnswerRes);
-    })
-
-    .get('/:id', async (req, res) => {
-        const answer = await AnswerRecord.getOne(req.params.id)
 
         res.json({
             answer,

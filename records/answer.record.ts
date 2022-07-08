@@ -1,6 +1,6 @@
 import {FieldPacket, OkPacket} from "mysql2";
 import {v4 as uuid} from "uuid";
-import {AnswerEntity} from "../types";
+import {AnswerEntity, AnswerGroupEnum} from "../types";
 import {pool} from "../utils/db";
 import {ValidationError} from "../utils/errors";
 
@@ -37,10 +37,29 @@ export class AnswerRecord implements AnswerEntity {
     }
 
     static async getAll(): Promise<AnswerRecord[]> {
-        const [results] = await pool.execute('SELECT * FROM `answers` ORDER BY `createdAt` DESC') as AnswerRecordResults;
+        const [results] = await pool.execute('SELECT * FROM `answers` ORDER BY `createdAt` DESC',
+        ) as AnswerRecordResults;
 
         return results.map(obj => new AnswerRecord(obj));
     }
+
+    static async getAllSortedByCategory(category: string): Promise<AnswerRecord[]> {
+
+        if (category === AnswerGroupEnum.MOST_COPIED) {
+            const [results] = await pool.execute('SELECT * FROM `answers` ORDER BY `copyBtnCount` DESC',
+            ) as AnswerRecordResults;
+
+            return results.map(obj => new AnswerRecord(obj));
+        } else {
+            const [results] = await pool.execute('SELECT * FROM `answers` WHERE `category` = :category ORDER BY `createdAt` DESC', {
+                category
+            }) as AnswerRecordResults;
+
+            return results.map(obj => new AnswerRecord(obj));
+        }
+
+    }
+
 
     static async getOne(id: string): Promise<AnswerRecord | null> {
         const [results] = await pool.execute("SELECT * FROM `answers` WHERE `id` = :id", {
