@@ -19,10 +19,9 @@ answersRouter
     })
 
     .get('/sort/:category', async (req, res) => {
-        // console.log(req.params.category)
-        const {category}= req.params
-        console.log(category)
-        if(!(category === AnswerGroupEnum.IT || category === AnswerGroupEnum.TELCO || category === AnswerGroupEnum.PREPAID || category === AnswerGroupEnum.OTHER || category === AnswerGroupEnum.MOST_COPIED )){
+        const {category} = req.params
+
+        if (!(category === AnswerGroupEnum.IT || category === AnswerGroupEnum.TELCO || category === AnswerGroupEnum.PREPAID || category === AnswerGroupEnum.OTHER || category === AnswerGroupEnum.MOST_COPIED)) {
             throw new ValidationError('Nie została zaznaczona kategoria odpowiedzi.');
         }
 
@@ -89,6 +88,14 @@ answersRouter
         res.json({
             answer,
         } as GetSingleAnswerRes);
+    })
+
+    .put('/count/:id', async (req, res) => {
+        const answer = await AnswerRecord.getOne(req.params.id);
+        console.log(answer)
+        // answer.copyBtnCount = answer.copyBtnCount + 1;
+        await answer.updateCount();
+        res.end();
     })
 
     .delete('/:id', async (req, res) => {

@@ -93,6 +93,13 @@ export class AnswerRecord implements AnswerEntity {
         })
     }
 
+    async updateCount(): Promise<void> {
+        await pool.execute('UPDATE `answers` SET `copyBtnCount` = `copyBtnCount` + 1 WHERE  `id` = :id', {
+            id: this.id,
+            copyBtnCount: this.copyBtnCount,
+        })
+    }
+
     static async delete(id: string): Promise<void> {
         const {affectedRows} = (await pool.execute('DELETE FROM `answers` WHERE `id` = :id', {
             id,
