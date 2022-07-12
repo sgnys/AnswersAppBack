@@ -19,9 +19,10 @@ export class AnswerRecord implements AnswerEntity {
         const {id, text, category, createdAt, modifiedAt, copyBtnCount, templateId} = obj
 
         if (text.length < 3 || text.length > 3000) {
-            throw new ValidationError('Długość wpisywanego tekstu musi zawierać się w przedziale od 3 do 300 znaków.');
+            throw new ValidationError('Długość wpisywanego tekstu musi zawierać się w przedziale od 3 do 3000 znaków.');
         }
-        if (category === "") {
+
+        if(!(category === AnswerGroupEnum.IT || category === AnswerGroupEnum.TELCO || category === AnswerGroupEnum.PREPAID || category === AnswerGroupEnum.OTHER || category === AnswerGroupEnum.MOST_COPIED)){
             throw new ValidationError('Nie została zaznaczona kategoria odpowiedzi.')
         }
 
@@ -39,7 +40,7 @@ export class AnswerRecord implements AnswerEntity {
     static async getAll(): Promise<AnswerRecord[]> {
         const [results] = await pool.execute('SELECT * FROM `answers` ORDER BY `createdAt` DESC',
         ) as AnswerRecordResults;
-
+        // !results.length? [] :
         return results.map(obj => new AnswerRecord(obj));
     }
 
@@ -59,7 +60,6 @@ export class AnswerRecord implements AnswerEntity {
         }
 
     }
-
 
     static async getOne(id: string): Promise<AnswerRecord | null> {
         const [results] = await pool.execute("SELECT * FROM `answers` WHERE `id` = :id", {

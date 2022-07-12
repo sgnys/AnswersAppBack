@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {AnswerRecord} from "../records/answer.record";
 import {TemplateRecord} from "../records/template.record";
-import {AnswerGroupEnum, GetSingleAnswerRes, ListAnswersRes} from "../types";
+import { AnswerGroupEnum, GetSingleAnswerRes, ListAnswersRes} from "../types";
 import {ValidationError} from "../utils/errors";
 
 export const answersRouter = Router();
@@ -35,7 +35,11 @@ answersRouter
     })
 
     .get('/:id', async (req, res) => {
-        const answer = await AnswerRecord.getOne(req.params.id)
+        const answer = await AnswerRecord.getOne(req.params.id);
+
+        if (answer === null) {
+            throw new ValidationError('Nie można edytować odpowiedzi, która nie istnieje')
+        }
 
         res.json({
             answer,
@@ -66,10 +70,15 @@ answersRouter
     })
 
     .put('/:id', async (req, res) => {
-
+        console.log(req.body)
         const {templateId, text, category} = req.body
 
         const answer = await AnswerRecord.getOne(req.params.id);
+        console.log(answer)
+
+        if (answer === null) {
+            throw new ValidationError('Nie można edytować odpowiedzi, która nie istnieje')
+        }
 
         if (templateId === "") {
             answer.templateId = null
@@ -92,15 +101,23 @@ answersRouter
 
     .put('/count/:id', async (req, res) => {
         const answer = await AnswerRecord.getOne(req.params.id);
-        console.log(answer)
-        // answer.copyBtnCount = answer.copyBtnCount + 1;
+
+        if (answer === null) {
+            throw new ValidationError('Nie udało się zwiększyć "copyBtnCount" w bazie danych. Rekord nie istnieje')
+        }
+
         await answer.updateCount();
         res.end();
     })
 
     .delete('/:id', async (req, res) => {
-        console.log(req.params.id)
-        await AnswerRecord.delete(req.params.id)
+        const answer = await AnswerRecord.getOne(req.params.id);
+
+        if (answer === null) {
+            throw new ValidationError('Nie można usunąć odpowiedzi, która nie istnieje')
+        }
+
+        await AnswerRecord.delete(req.params.id);
         res.end();
     })
 

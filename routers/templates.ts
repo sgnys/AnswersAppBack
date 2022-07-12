@@ -36,10 +36,10 @@ templatesRouter
             throw new ValidationError('Nie znaleziono szablonu o podanym ID');
         }
 
+        if(template.firstParagraph === req.body.firstParagraph && template.lastParagraph === req.body.lastParagraph){
+            throw new ValidationError('Nie dokonałeś żadnych zmian w szablonie, modyfikacja nie została wysłana na serwer')
+        }
 
-        //TODO zrobić walidację jeżeli         template.firstParagraph === req.body.firstParagraph;
-        // i                                   template.lastParagraph === req.body.lastParagraph;
-        // to ValidationError "Nie dokonałeś żadnych zmian w szablonie, modyfikacja nie została wysłana na serwer"
         template.firstParagraph = req.body.firstParagraph;
         template.lastParagraph = req.body.lastParagraph
 
