@@ -52,7 +52,7 @@ templatesRouter
         }
 
         await template.update();
-        console.log(template);
+
         res.json({
             template,
         } as GetSingleTemplateRes)

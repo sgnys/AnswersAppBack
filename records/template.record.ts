@@ -24,9 +24,6 @@ export class TemplateRecord implements TemplateEntity{
             throw new ValidationError('Długość akapitu końcowego  musi zawierać się w przedziale od 3 do 300 znaków.');
         }
 
-        if(name.trim().length < 2 || lastParagraph.trim().length > 20){
-            new ValidationError('Długość nazwy szablonu  musi zawierać się w przedziale od 3 do 300 znaków.');
-        }
 
         this.id = id;
         this.name =name;

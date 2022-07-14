@@ -11,7 +11,7 @@ export class AnswerRecord implements AnswerEntity {
     public text: string;
     public category: string;
     public createdAt: Date;
-    public modifiedAt: Date | null;
+    public modifiedAt?: Date | null;
     public copyBtnCount = 0;
     public templateId: string | null;
 
