@@ -26,7 +26,6 @@ export class AnswerRecord implements AnswerEntity {
             throw new ValidationError('Nie została zaznaczona kategoria odpowiedzi.')
         }
 
-        //TODO powyższe walidacje przenieść również na front
 
         this.id = id;
         this.text = text;
